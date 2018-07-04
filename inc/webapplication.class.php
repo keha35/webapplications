@@ -41,7 +41,7 @@ class PluginWebapplicationsWebapplication extends CommonDBTM {
    protected $usenotepad = true;
 
    static $types = ['Computer', 'Monitor', 'NetworkEquipment', 'Peripheral', 'Phone',
-                         'Printer', 'Software', 'Entity', 'SoftwareLicense'];
+                         'Printer', 'Software', 'Entity', 'SoftwareLicense', 'PluginWebapplicationsWebapplication'];
    static $tags  = '[WEBAPPLICATION_URL]';
 
    /**
@@ -220,9 +220,7 @@ class PluginWebapplicationsWebapplication extends CommonDBTM {
          'massiveaction'      => false,
          'name'               => _n('Associated item', 'Associated items', 2),
          'forcegroupby'       => true,
-         'joinparams'         => [
-            'jointype'           => 'child'
-         ]
+         'joinparams'         => ['jointype'           => 'child']
       ];
 
       $tab[] = [
@@ -288,15 +286,6 @@ class PluginWebapplicationsWebapplication extends CommonDBTM {
          'field'              => 'entities_id',
          'name'               => __('Entity') . "-" . __('ID')
       ];
-
-      /*$tab[] = [
-         'id'                 => '86',
-         'table'              => $this->getTable(),
-         'field'              => 'is_recursive',
-         'name'               => __('Child entities'),
-         'datatype'           => 'bool'
-      ];*/
-
       return $tab;
    }
 
@@ -313,10 +302,11 @@ class PluginWebapplicationsWebapplication extends CommonDBTM {
       $this->addDefaultFormTab($ong);
       $this->addStandardTab('PluginWebapplicationsWebapplication_Item', $ong, $options);
       $this->addStandardTab('Ticket', $ong, $options);
+      $this->addStandardTab('KnowbaseItem_Item', $ong, $options);
       $this->addStandardTab('Item_Problem', $ong, $options);
-      $this->addStandardTab('Contract_Item', $ong, $options);
-      $this->addStandardTab('Document_Item', $ong, $options);
       $this->addStandardTab('Change_Item', $ong, $options);
+      $this->addStandardTab('Document_Item', $ong, $options);
+      $this->addStandardTab('Contract_Item', $ong, $options);
       $this->addStandardTab('Link', $ong, $options);
       $this->addStandardTab('Notepad', $ong, $options);
       $this->addStandardTab('Log', $ong, $options);
@@ -652,7 +642,7 @@ class PluginWebapplicationsWebapplication extends CommonDBTM {
       $isadmin = static::canUpdate();
       $actions = parent::getSpecificMassiveActions($checkitem);
 
-      if ($_SESSION['glpiactiveprofile']['interface'] == 'central') {
+      if (Session::getCurrentInterface() == 'central') {
          if ($isadmin) {
             $actions['PluginWebapplicationsWebapplication' . MassiveAction::CLASS_ACTION_SEPARATOR . 'install']   = _x('button', 'Associate');
             $actions['PluginWebapplicationsWebapplication' . MassiveAction::CLASS_ACTION_SEPARATOR . 'uninstall'] = _x('button', 'Dissociate');
